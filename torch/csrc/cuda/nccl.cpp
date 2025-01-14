@@ -572,20 +572,20 @@ constexpr auto count_max =
 // https://github.com/NVIDIA/nccl/issues/696. The issue of skipping send/recv
 // is that it can cause deadlock when a rank send and recv 0 bytes so it's
 // completely skipping the collective, causing mismatch across ranks
-#if defined(NCCL_MAJOR) && \
-    ((NCCL_MAJOR > 2) || ((NCCL_MAJOR == 2) && (NCCL_MINOR > 13)))
-template <typename T>
-constexpr bool _nccl_should_send_recv([[maybe_unused]] T _unused_) {
-  return true;
-}
-#else
+// #if defined(NCCL_MAJOR) && \
+//     ((NCCL_MAJOR > 2) || ((NCCL_MAJOR == 2) && (NCCL_MINOR > 13)))
+// template <typename T>
+// constexpr bool _nccl_should_send_recv([[maybe_unused]] T _unused_) {
+//   return true;
+// }
+// #else
 // old NCCL uses 0 byte message for synchronization
 // Avoid send/recv when message size is zero
 template <typename T>
 inline bool _nccl_should_send_recv(T value) {
   return value != 0;
 }
-#endif
+// #endif
 } // namespace
 
 size_t get_max_count() {
